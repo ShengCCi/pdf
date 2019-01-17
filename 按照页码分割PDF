@@ -1,0 +1,37 @@
+# -*- coding: UTF-8 -*-
+# 分割pdf格式的文件（安装自己的要求分割页面）
+from PyPDF2 import PdfFileReader, PdfFileWriter
+import os
+# 文件地址
+path = r'D:\360极速浏览器下载\利用Python进行数据分析.pdf'
+# 分割点，需要结束的位置
+split_page = ['15', '30', '58', '93', '125', '172', '197', '274', '312', '354', '411', '463']
+# 份数
+copies = len(split_page)
+# 构建分割的页面组合
+split_pages = {}
+for i in range(len(split_page)):
+    if i == 0:
+        split_pages['第{}份'.format(i+1)] = ['0']
+        split_pages['第{}份'.format(i+1)].append(split_page[i])
+    else:
+        split_pages['第{}份'.format(i+1)] = [int(split_page[i-1])-1]
+        split_pages['第{}份'.format(i+1)].append(split_page[i])
+# 获取文件名字
+pdf_fname = os.path.splitext(os.path.basename(path))[0]
+# 获取文件内容
+pdf_value = PdfFileReader(path)
+for i in range(len(split_page)):
+    start_page = split_pages['第{}份'.format(i+1)][0]
+    end_page = split_pages['第{}份'.format(i+1)][1]
+    # 创建一个新的pdf文件
+    pdf_writer = PdfFileWriter()
+    # 将每份内的内容放在一个pdf文件中
+    for j in range(int(start_page),int(end_page)):
+        # 将页面插入进去
+        pdf_writer.addPage(pdf_value.getPage(j))
+    output_filename = '{}_第{}份_{}_{}.pdf'.format(fname, i+1, int(start_page)+1, int(end_page)-1)
+    # 创建pdf文件
+    pdfoutputfile = open(r"D:\360极速浏览器下载\pdf\{}".format(output_filename), 'wb')
+    # 数据写进去
+    pdf_writer.write(pdfoutputfile)
