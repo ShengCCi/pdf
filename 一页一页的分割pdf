@@ -1,0 +1,25 @@
+# 分割pdf格式的文件（一页一页)
+from PyPDF2 import PdfFileReader, PdfFileWriter
+import os
+# pdf文件所在的目录
+path = r'D:\360极速浏览器下载\利用Python进行数据分析.pdf'
+# path.basename获得文件的名字
+pdf_fname = os.path.basename(path)
+# path.splitext获得文件和扩展名的元组
+fname = os.path.splitext(pdf_fname)[0]
+# 读取pdf内容
+pdf_value = PdfFileReader(path)
+# 获取dpf的页数
+pdf_pages = pdf_value.getNumPages()
+# for循环保存页面
+for page in range(pdf_pages):
+    # 创建一个新的pdf文件
+    pdf_writer = PdfFileWriter()
+    # 将页面插入进去
+    pdf_writer.addPage(pdf_value.getPage(page))
+    # 编辑他的新名字
+    output_filename = '{}_{}.pdf'.format(fname, page+1)
+    # 创建pdf文件
+    pdfoutputfile = open(r"D:\360极速浏览器下载\pdf\{}".format(output_filename), 'wb')
+    # 数据写进去
+    pdf_writer.write(pdfoutputfile)
